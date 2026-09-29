@@ -6,8 +6,8 @@ each other.
 ## Setup (once)
 
 ```bash
-git clone https://github.com/rakshithreddy-aredla/anchor-caregiver-memory
-cd anchor-caregiver-memory
+git clone https://github.com/akhil-arvapalli/devnovate-Authenticated.git
+cd devnovate-Authenticated
 pip install -r backend/requirements.txt
 cp .env.example .env   # set your Hindsight + Groq keys
 python run.py          # verify bank + demo data work

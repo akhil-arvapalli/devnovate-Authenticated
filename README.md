@@ -35,7 +35,7 @@ Read more about [what agent memory is](https://vectorize.io/what-is-agent-memory
 ## Architecture
 
 ```
-[Frontend] WhatsApp-style chat (Streamlit / FastAPI web UI)
+[Frontend] WhatsApp-style chat (React + Vite; deprecated Streamlit UI kept for reference)
      │
 [Backend] FastAPI — the agent loop
      │
@@ -104,11 +104,15 @@ uvicorn agent.main:app --reload
 
 ### 6. Open the chat UI
 
-From the repo root:
+From the `frontend-react/` directory:
 
 ```bash
-streamlit run frontend/app.py
+npm install
+npm run dev
 ```
+
+Then open http://localhost:5173 (the Vite dev server proxies `/chat`, `/brief`, `/health`
+to the FastAPI backend at `http://localhost:8000` — override with `ANCHOR_API_URL`).
 
 Then ask:
 
@@ -134,7 +138,11 @@ anchor/
 │   │   └── load_demo_data.py  # retain_batch into Hindsight
 │   └── requirements.txt
 ├── frontend/
-│   └── app.py                 # Streamlit chat UI + doctor brief
+│   └── app.py                 # (deprecated) Streamlit chat UI + doctor brief
+├── frontend-react/            # React + Vite UI — glassmorphism, reactbits-style components
+│   ├── src/components/        # SpotlightCard, ShinyText, TypingDots, ChatMessage, BriefPanel
+│   ├── src/api.js             # /chat, /brief, /health wrapper
+│   └── src/index.css          # glassmorphism design system
 ├── content/                   # articles, posts, scripts (see docs)
 └── docs/
     ├── CONTENT_PLAN.md
@@ -146,7 +154,8 @@ anchor/
 - **Memory:** Hindsight Cloud / open-source (retain, recall, reflect)
 - **LLM:** Groq (`gpt-oss-120b`, `qwen3-32b`) via OpenAI-compatible API
 - **Backend:** FastAPI + Python
-- **Frontend:** Streamlit (fast, clean, demo-ready)
+- **Frontend:** React + Vite with glassmorphism + reactbits-style components
+  (deprecated Streamlit UI kept at `frontend/app.py`)
 - **Data:** Synthetic caregiver history (realistic names, meds, BP readings, doctor notes)
 
 ## License

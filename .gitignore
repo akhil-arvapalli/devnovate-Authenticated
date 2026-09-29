@@ -26,5 +26,9 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Node (frontend-react)
+node_modules/
+dist/
+
 # Docker
 *.pid

@@ -23,7 +23,7 @@ class TestChat:
         with patch("agent.main.catch") as mock_catch, \
              patch("agent.main.run_loop") as mock_loop:
             mock_catch.return_value = {"risk": True, "reason": "interaction",
-                                       "evidence": []}
+                                       "evidence": ["Warfarin 5mg daily"]}
             mock_loop.return_value = {"answer": "Call the doctor.", "risk": True,
                                       "risk_reason": "interaction"}
             resp = client.post("/chat", json={"message": "Mom is dizzy"})
@@ -32,6 +32,7 @@ class TestChat:
         assert body["answer"] == "Call the doctor."
         assert body["risk"] is True
         assert body["risk_reason"] == "interaction"
+        assert body["evidence"] == ["Warfarin 5mg daily"]
 
     def test_catch_risk_merged_when_loop_misses_it(self):
         """Catch engine finds a risk the loop didn't -> merged into response."""
@@ -65,6 +66,37 @@ class TestChat:
             resp = client.post("/chat", json={"message": "Mom is dizzy"})
         assert resp.status_code == 200
         assert resp.json()["risk"] is False
+
+
+class TestDashboard:
+    def test_dashboard_returns_care_snapshot(self):
+        resp = client.get("/dashboard")
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["patient"]["name"] == "Margaret Chen"
+        assert body["patient"]["age"] == 78
+        assert body["attention"]
+        assert body["timeline"]
+        assert body["metrics"]["latest_bp"] == "165/92"
+        assert len(body["medications"]) >= 4
+
+
+class TestObservation:
+    def test_observation_is_retained_and_returned(self):
+        with patch("agent.main.retain") as mock_retain:
+            resp = client.post(
+                "/observations",
+                json={"content": "Margaret slept well and ate breakfast.",
+                      "category": "daily note"},
+            )
+        assert resp.status_code == 200
+        assert resp.json()["saved"] is True
+        assert resp.json()["category"] == "daily note"
+        mock_retain.assert_called_once()
+
+    def test_observation_rejects_blank_content(self):
+        resp = client.post("/observations", json={"content": "  "})
+        assert resp.status_code == 422
 
 
 class TestBrief:

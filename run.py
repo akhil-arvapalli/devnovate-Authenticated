@@ -21,7 +21,7 @@ def main() -> None:
     print(f"Loaded {count} demo memories. Bank ready.")
     print("Next steps:")
     print("  1. Start backend:  uvicorn agent.main:app --reload  (from the backend/ dir)")
-    print("  2. Start UI:       streamlit run frontend/app.py    (from the repo root)")
+    print("  2. Start UI:       npm run dev    (from the frontend-react/ dir)")
     print("  Or talk directly:  python -m agent.cli              (from the backend/ dir)")
 
 
